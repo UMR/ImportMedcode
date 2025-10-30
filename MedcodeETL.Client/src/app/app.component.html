@@ -1,0 +1,130 @@
+<div class="container">
+  <div class="header">
+    <div class="header-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path
+          d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+        </path>
+        <polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline>
+        <polyline points="7.5 19.79 7.5 14.6 3 12"></polyline>
+        <polyline points="21 12 16.5 14.6 16.5 19.79"></polyline>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+      </svg>
+    </div>
+    <h1>{{ title }}</h1>
+    <p class="header-subtitle">Extract, Transform, Load Medical Codes</p>
+  </div>
+
+  <div class="form-container" *ngIf="!isProcessing && !requestId">
+    <h2 class="section-title">Configuration</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="codeType">
+          <span class="label-icon">📋</span>
+          Code Type *
+        </label>
+        <input type="text" id="codeType" [(ngModel)]="codeType" placeholder="e.g., ICD-10-CM"
+          [disabled]="isProcessing" />
+      </div>
+
+      <div class="form-group">
+        <label for="codeVersion">
+          <span class="label-icon">🏷️</span>
+          Code Version *
+        </label>
+        <input type="text" id="codeVersion" [(ngModel)]="codeVersion" placeholder="e.g., 2025"
+          [disabled]="isProcessing" />
+      </div>
+
+      <div class="form-group">
+        <label for="batchSize">
+          <span class="label-icon">📊</span>
+          Batch Size
+        </label>
+        <input type="number" id="batchSize" [(ngModel)]="batchSize" [disabled]="isProcessing" min="1" max="10000" />
+      </div>
+    </div>
+
+    <div class="file-upload-section">
+      <div class="form-group">
+        <label for="newFile">
+          <span class="label-icon">📄</span>
+          New Codes File *
+        </label>
+        <div class="file-input-wrapper">
+          <input type="file" id="newFile" (change)="onNewFileSelected($event)" accept=".xlsx,.xls"
+            [disabled]="isProcessing" />
+          <span class="file-name" *ngIf="newFile">✓ {{ newFile.name }}</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="oldFile">
+          <span class="label-icon">📝</span>
+          Old Codes File <span class="optional-badge">Optional</span>
+        </label>
+        <div class="file-input-wrapper">
+          <input type="file" id="oldFile" (change)="onOldFileSelected($event)" accept=".xlsx,.xls"
+            [disabled]="isProcessing" />
+          <span class="file-name" *ngIf="oldFile">✓ {{ oldFile.name }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn-primary" (click)="startETL()"
+        [disabled]="isProcessing || !codeType || !codeVersion || !newFile">
+        <span class="btn-icon">▶</span>
+        Start ETL Process
+      </button>
+    </div>
+  </div>
+
+  <div class="progress-container" *ngIf="isProcessing || requestId">
+    <div class="request-id" *ngIf="requestId">
+      <strong>Request ID:</strong> {{ requestId }}
+    </div>
+
+    <div class="stepper">
+      <div class="step" *ngFor="let step of steps; let i = index" [class.active]="step.status === 'active'"
+        [class.completed]="step.status === 'completed'" [class.error]="step.status === 'error'">
+        <div class="step-header">
+          <div class="step-number">
+            <span *ngIf="step.status === 'pending' || step.status === 'active'">{{ i + 1 }}</span>
+            <span *ngIf="step.status === 'completed'" class="icon">✓</span>
+            <span *ngIf="step.status === 'error'" class="icon">✗</span>
+          </div>
+          <div class="step-label">{{ step.label }}</div>
+        </div>
+
+        <div class="step-content" *ngIf="step.status !== 'pending'">
+          <div class="step-message">{{ step.message }}</div>
+          <div class="step-data" *ngIf="step.data">
+            <div *ngIf="step.data.total"><span class="data-label">Total Rows:</span> {{ step.data.total | number }}
+            </div>
+            <div *ngIf="step.data.processedNewCodes"><span class="data-label">Processed:</span> {{
+              step.data.processedNewCodes | number }}</div>
+            <div *ngIf="step.data.newCodes !== undefined"><span class="data-label">New:</span> {{ step.data.newCodes |
+              number }}</div>
+            <div *ngIf="step.data.oldCodes !== undefined"><span class="data-label">Old:</span> {{ step.data.oldCodes |
+              number }}</div>
+            <div *ngIf="step.data.records !== undefined"><span class="data-label">Records:</span> {{ step.data.records |
+              number }}</div>
+            <div *ngIf="step.data.ms"><span class="data-label">Time:</span> {{ step.data.ms | number:'1.0-2' }}ms</div>
+          </div>
+        </div>
+
+        <div class="step-line" *ngIf="i < steps.length - 1"></div>
+      </div>
+    </div>
+
+    <div class="button-group" *ngIf="!isProcessing">
+      <button class="btn btn-secondary" (click)="reset()">
+        <span class="btn-icon">🔄</span>
+        Start New Process
+      </button>
+    </div>
+  </div>
+</div>

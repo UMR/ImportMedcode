@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedcodeETLProcess", "MedcodeETLProcess\MedcodeETLProcess.csproj", "{B273D3AA-CACD-4B95-AB93-7BC39BB07BD8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcode.Presentation", "Medcode.Presentation\Medcode.Presentation.csproj", "{6F2431E5-F989-4F2A-8DFB-3A0A1221B120}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B273D3AA-CACD-4B95-AB93-7BC39BB07BD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B273D3AA-CACD-4B95-AB93-7BC39BB07BD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B273D3AA-CACD-4B95-AB93-7BC39BB07BD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B273D3AA-CACD-4B95-AB93-7BC39BB07BD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F2431E5-F989-4F2A-8DFB-3A0A1221B120}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F2431E5-F989-4F2A-8DFB-3A0A1221B120}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F2431E5-F989-4F2A-8DFB-3A0A1221B120}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F2431E5-F989-4F2A-8DFB-3A0A1221B120}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {400E3E46-E4A5-4536-84DF-3FF720AD7DC2}
+	EndGlobalSection
+EndGlobal
