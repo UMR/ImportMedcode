@@ -29,7 +29,7 @@ namespace MedcodeETLProcess.Repository
                                 "SELECT MEDCODE FROM [dbo].[UMR_MEDCODES] WHERE LOWER(MEDCODE) IN @Codes",
                                 new { Codes = allCodes },
                                 transaction);
-                            var existingCodesSet = new HashSet<string>(existingCodesInDB.Select(c => c.ToLower()));
+                            var existingCodesSet = new HashSet<string>(existingCodesInDB);
 
                             var insertBatch = medcodeData.Where(d => !existingCodesSet.Contains(d.MedicalCode.MedCode.ToString().ToLower())).ToList();
                             var updateBatch = medcodeData.Where(d => existingCodesSet.Contains(d.MedicalCode.MedCode.ToString().ToLower())).ToList();
@@ -263,14 +263,11 @@ namespace MedcodeETLProcess.Repository
                     switch (excelStatus)
                     {
                         case "N":
-                            finalStatus = "Z";
+                            finalStatus = "M";
                             secondaryStatus = currentStatus;
                             break;
                         case "D":
                             finalStatus = "D";
-                            break;
-                        case "M":
-                            finalStatus = "M";
                             break;
                         case "O":
                             finalStatus = "O";
