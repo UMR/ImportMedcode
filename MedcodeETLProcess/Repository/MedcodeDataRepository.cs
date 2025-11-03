@@ -24,9 +24,9 @@ namespace MedcodeETLProcess.Repository
                     {
                         try
                         {
-                            var allCodes = medcodeData.Select(d => d.MedicalCode.MedCode).Distinct().ToList();
+                            var allCodes = medcodeData.Select(d => d.MedicalCode.MedCode.ToLower()).Distinct().ToList();
                             var existingCodesInDB = await connection.QueryAsync<string>(
-                                "SELECT MEDCODE FROM [dbo].[UMR_MEDCODES] WHERE MEDCODE IN @Codes",
+                                "SELECT MEDCODE FROM [dbo].[UMR_MEDCODES] WHERE LOWER(MEDCODE) IN @Codes",
                                 new { Codes = allCodes },
                                 transaction);
 
