@@ -24,16 +24,15 @@ namespace MedcodeETLProcess.Repository
                     {
                         try
                         {
-                            var allCodes = medcodeData.Select(d => d.MedicalCode.MedCode).Distinct().ToList();
+                            var allCodes = medcodeData.Select(d => d.MedicalCode.MedCode.ToLower()).Distinct().ToList();
                             var existingCodesInDB = await connection.QueryAsync<string>(
                                 "SELECT MEDCODE FROM [dbo].[UMR_MEDCODES] WHERE MEDCODE IN @Codes",
                                 new { Codes = allCodes },
                                 transaction);
+                            var existingCodesSet = new HashSet<string>(existingCodesInDB.Select(c => c.ToLower()));
 
-                            var existingCodesSet = new HashSet<string>(existingCodesInDB);
-
-                            var insertBatch = medcodeData.Where(d => !existingCodesSet.Contains(d.MedicalCode.MedCode)).ToList();
-                            var updateBatch = medcodeData.Where(d => existingCodesSet.Contains(d.MedicalCode.MedCode)).ToList();
+                            var insertBatch = medcodeData.Where(d => !existingCodesSet.Contains(d.MedicalCode.MedCode.ToString().ToLower())).ToList();
+                            var updateBatch = medcodeData.Where(d => existingCodesSet.Contains(d.MedicalCode.MedCode.ToString().ToLower())).ToList();
 
                             Console.WriteLine($"[BULK OPERATION] Insert batch: {insertBatch.Count}, Update batch: {updateBatch.Count}");
 
@@ -83,7 +82,7 @@ namespace MedcodeETLProcess.Repository
             var medcodesParams = data.Select(d => new
             {
                 Guid = d.MedicalCode.Guid,
-                CodeType = d.MedicalCode.CodeType,
+                CodeType = d.MedicalCode.CodeType.ToString(),
                 MedCode = d.MedicalCode.MedCode,
                 SexType = "B",
                 CodeVersion = codeVersion,
