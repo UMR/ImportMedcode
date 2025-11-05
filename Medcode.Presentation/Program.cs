@@ -3,11 +3,18 @@ using MedcodeETLProcess.Services;
 using Medcode.Presentation.Hubs;
 using Medcode.Presentation.Notifications;
 using MedcodeETLProcess.Contracts;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
 
+builder.Host.UseSerilog(); // Use Serilog instead of default logging
+
+// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
@@ -17,7 +24,7 @@ builder.Services.AddCors(options =>
         policy
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .WithOrigins("http://localhost:4200")
+            .WithOrigins("http://localhost:4200", "http://localhost", "http://localhost/ImportMedcodeClient")
             .AllowCredentials();
     });
 });
@@ -32,7 +39,7 @@ builder.Services.AddSingleton<IProgressNotifier, SignalRProgressNotifier>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -43,6 +50,18 @@ app.UseAuthorization();
 app.UseCors("AllowAll");
 
 app.MapControllers();
-app.MapHub<ETLHub>("/hubs/etl");
+app.MapHub<ETLHub>("/ImportMedcodeAPI/hubs/etl");
 
-app.Run();
+try
+{
+    Log.Information("Starting web application");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

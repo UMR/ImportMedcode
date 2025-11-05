@@ -26,10 +26,10 @@ namespace MedcodeETLProcess.Repository
                         {
                             var allCodes = medcodeData.Select(d => d.MedicalCode.MedCode.ToLower()).Distinct().ToList();
                             var existingCodesInDB = await connection.QueryAsync<string>(
-                                "SELECT MEDCODE FROM [dbo].[UMR_MEDCODES] WHERE LOWER(MEDCODE) IN @Codes",
+                                "SELECT MEDCODE FROM [dbo].[UMR_MEDCODES] WHERE MEDCODE IN @Codes",
                                 new { Codes = allCodes },
                                 transaction);
-                            var existingCodesSet = new HashSet<string>(existingCodesInDB);
+                            var existingCodesSet = new HashSet<string>(existingCodesInDB.Select(c=> c.ToLower()));
 
                             var insertBatch = medcodeData.Where(d => !existingCodesSet.Contains(d.MedicalCode.MedCode.ToString().ToLower())).ToList();
                             var updateBatch = medcodeData.Where(d => existingCodesSet.Contains(d.MedicalCode.MedCode.ToString().ToLower())).ToList();

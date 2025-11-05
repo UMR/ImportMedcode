@@ -21,8 +21,8 @@ namespace MedcodeETLProcess
                 .ConfigureAppConfiguration((context, config) =>
                 {
                     config.SetBasePath(Directory.GetCurrentDirectory())
-                          .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                          .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true)
+                          .AddJsonFile("worker.json", optional: false, reloadOnChange: true)
+                          //.AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true)
                           .AddEnvironmentVariables();
                 })
                 .ConfigureServices((context, services) =>
