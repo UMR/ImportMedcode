@@ -8,11 +8,11 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Serilog
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .CreateLogger();
+//Log.Logger = new LoggerConfiguration()
+//    .ReadFrom.Configuration(builder.Configuration)
+//    .CreateLogger();
 
-builder.Host.UseSerilog(); // Use Serilog instead of default logging
+//builder.Host.UseSerilog(); // Use Serilog instead of default logging
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -24,7 +24,8 @@ builder.Services.AddCors(options =>
         policy
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .WithOrigins("http://localhost:4200", "http://localhost", "http://localhost/ImportMedcodeClient")
+            .WithOrigins("http://localhost:4200", "http://localhost", "http://localhost/ImportMedcodeClient",
+            "https://universalmedicalrecord.com/ImportMedcodeClient")
             .AllowCredentials();
     });
 });
@@ -45,23 +46,23 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
 app.UseCors("AllowAll");
 
 app.MapControllers();
-app.MapHub<ETLHub>("/ImportMedcodeAPI/hubs/etl");
+app.MapHub<ETLHub>("/hubs/etl");
 
-try
-{
-    Log.Information("Starting web application");
+//try
+//{
+    //Log.Information("Starting web application");
     app.Run();
-}
-catch (Exception ex)
-{
-    Log.Fatal(ex, "Application terminated unexpectedly");
-}
-finally
-{
-    Log.CloseAndFlush();
-}
+//}
+//catch (Exception ex)
+//{
+//    Log.Fatal(ex, "Application terminated unexpectedly");
+//}
+//finally
+//{
+//    Log.CloseAndFlush();
+//}

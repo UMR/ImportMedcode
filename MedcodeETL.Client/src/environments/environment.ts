@@ -1,5 +1,5 @@
 export const environment = {
-    production: false,
-    apiUrl: 'http://localhost:5066/api/MedcodeApi',
-    signalrHubUrl: 'http://localhost:5066/hubs/etl'
+  production: false,
+  apiUrl: 'https://universalmedicalrecord.com/ImportMedcodeAPI/api/MedcodeApi',
+  signalrHubUrl: 'https://universalmedicalrecord.com/ImportMedcodeAPI/hubs/etl'
 };
